@@ -11,7 +11,7 @@ export const fetchWhiskiesSuccess = (whiskies: any) => ({
   payload: whiskies
 });
 
-export const fetchWhiskiesFailure = (message: string) => ({
+export const fetchWhiskiesFailure = (message: any) => ({
   type: FETCH_WHISKIES_SUCCESS,
   payload: message
 });
