@@ -9,20 +9,21 @@ import WhiskyGrid from './components/WhiskyGrid';
 type whisky = {
   id: string;
   title: string;
-  imageUrl: string;
+  imageURL: string;
 };
 
 interface IState {
   whiskies: whisky[];
   isLoading: boolean;
-  error: null;
+  error: any;
 }
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const whiskies = useSelector((state: IState) => state.whiskies);
   const isLoading = useSelector((state: IState) => state.isLoading);
-
+  const error = useSelector((state: IState) => state.error);
+  console.log('error', error);
   return (
     <div className='App'>
       <button onClick={() => dispatch(fetchWhiskies())}>Fetch whiskies</button>

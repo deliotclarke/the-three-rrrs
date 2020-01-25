@@ -11,15 +11,19 @@ import {
   fetchWhiskiesFailure
 } from '../actions/index';
 
-const url = 'https://evening-citadel-85778.herokuapp.com/whiskey/'; // The API for the whiskies
+const fetchURL = 'https://picsum.photos/v2/list?limit=10'; // The API for the whiskies
 /*
     The API returns the data in the following format:
+  [
     {
-        "count": number,
-        "next": "url to next page",
-        "previous": "url to previous page",
-        "results: array of whiskies
+        "id": "0",
+        "author": "Alejandro Escamilla",
+        "width": 5616,
+        "height": 3744,
+        "url": "https://unsplash.com/...",
+        "download_url": "https://picsum.photos/..."
     }
+  ]
     since we are only interested in the results array we will have to use map on our observable
  */
 
@@ -34,28 +38,27 @@ function fetchWhiskiesEpic(action$: any) {
         console.log('action fired');
         // ajax calls from Observable return observables. This is how we generate the inner Observable
         return ajax
-          .getJSON(url) //getJSON simply sends a GET request with Content-Type application/json
+          .getJSON(fetchURL) //getJSON simply sends a GET request with Content-Type application/json
           .map((data: any) => {
-            console.log(data.results);
-            return data.results;
+            console.log('data', data);
+            return data;
           }) //get the data and extract only the results
           .map((whiskies: any) =>
             whiskies.map((whisky: any) => ({
               id: whisky.id,
-              title: whisky.title,
-              imageURL: whisky.img_url
+              title: whisky.author,
+              imageURL: whisky.download_url
             }))
           )
-          .map(
-            (whiskies: any) =>
-              whiskies.filter((whisky: any) => !!whisky.imageURL)
-            //at the end our inner Observable has a stream of an array of whisky objects which will be merge into the outer Observable
+          .map((whiskies: any) =>
+            whiskies.filter((whisky: any) => !!whisky.imageURL)
           );
+        //at the end our inner Observable has a stream of an array of whisky objects which will be merge into the outer Observable
       })
       .map((whiskies: any) => fetchWhiskiesSuccess(whiskies)) // map the resulting array to an action of type FETCH_WHISKIES_SUCCESS
       // every action that is contained in the stream returned from the epic is dispatched to Redux, this is why we map the actions to streams.
       //if an erro occurs, create an Observable of the action to be dispatched on error. Unlike other operators, catch does not explicitly return an Observable.
-      .catch((error: any) => Observable.of(fetchWhiskiesFailure(error.message)))
+      .catch((error: any) => Observable.of(fetchWhiskiesFailure(error)))
   );
 }
 

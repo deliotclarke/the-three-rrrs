@@ -7,7 +7,7 @@ import {
 const initialState = {
   whiskies: [],
   isLoading: false,
-  error: {}
+  error: null
 };
 
 export default function rootReducer(state: any = initialState, action: any) {

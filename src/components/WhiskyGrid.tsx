@@ -5,7 +5,7 @@ import Whisky from './Whisky';
 type whisky = {
   id: string;
   title: string;
-  imageUrl: string;
+  imageURL: string;
 };
 
 interface IProps {
